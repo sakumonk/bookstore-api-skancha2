@@ -42,8 +42,13 @@ router.get("/api/orders/:id", checkToken, async (req, res, next) => {
     // TODO Implement Me!
     const { id } = req.params;
     const user = await users_DAO.readOne(req.user.username);
-    const data = await orders.read(id, user[0]._id, req.user.role);
-    res.json({ data });
+    if (user.length === 0) { //empty list
+      const data = await orders.read(id, "", req.user.role); //no user key identified
+      res.json({ data });
+    } else {
+      const data = await orders.read(id, user[0]._id, req.user.role);
+      res.json({ data });
+    }
   } catch (err) {
     next(err);
   }
@@ -65,8 +70,14 @@ router.delete("/api/orders/:id", checkToken, async (req, res, next) => {
     // TODO Implement Me!
     const{ id } = req.params;
     const user = await users_DAO.readOne(req.user.username);
-    const data = await orders.delete(id, user[0]._id );
-    res.status(200).json({ data });
+    if (user.length === 0) {
+      const data = await orders.delete(id, "" );
+      res.status(200).json({ data });
+    } else {
+      const data = await orders.delete(id, user[0]._id );
+      res.status(200).json({ data });
+    }
+    
   } catch (err) {
     next(err);
   }
@@ -84,8 +95,14 @@ router.put("/api/orders/:id", checkToken, async (req, res, next) => {
       );
     }
     const user = await users_DAO.readOne(req.user.username);
-    const data = await orders.update(id, user[0]._id , { products, status });
-    res.json({ data });
+    if (user.length === 0) { //empty list (username not in database)
+      const data = await orders.update(id, "", { products, status });
+      res.json({ data });
+    } else {
+      const data = await orders.update(id, user[0]._id , { products, status });
+      res.json({ data });
+    }
+    
   } catch (err) {
     next(err);
   }

@@ -373,7 +373,7 @@ describe(`Test GET ${endpoint}`, () => {
       const id = order._id;
       const response = await request
         .get(`${endpoint}/${id}`)
-        .set("Authorization", `Bearer ${usertoken3}`);
+        .set("Authorization", `Bearer ${tokens.customer}`);
       expect(response.status).toBe(403);
     });
 
@@ -392,7 +392,7 @@ describe(`Test GET ${endpoint}`, () => {
         const id = order._id;
       const response = await request
         .get(`${endpoint}/${id}`)
-        .set("Authorization", `Bearer ${usertoken2}`);
+        .set("Authorization", `Bearer ${tokens.admin}`);
       expect(response.status).toBe(200);
       expect(response.body.data.customer).toBe(user._id);
       expect(response.body.data.products[0].product).toBe(item._id);
@@ -644,7 +644,7 @@ describe(`Test GET ${endpoint}`, () => {
       user2 = await users.create({
         username: "existing-user-post2",
         password: "existing-user-post2",
-        role: "ADMIN",
+        role: "CUSTOMER",
       });
 
       item = await products.create({
@@ -709,7 +709,7 @@ describe(`Test GET ${endpoint}`, () => {
         .send({
           status: "COMPLETE",
         })
-        .set("Authorization", `Bearer ${usertoken2}`);
+        .set("Authorization", `Bearer ${tokens.admin}`);
       expect(response.status).toBe(403);
       });
 
@@ -720,7 +720,7 @@ describe(`Test GET ${endpoint}`, () => {
         .send({
           status: "COMPLETE",
         })
-        .set("Authorization", `Bearer ${usertoken2}`);
+        .set("Authorization", `Bearer ${tokens.customer}`);
       expect(response.status).toBe(403);
       });
     });
@@ -908,7 +908,7 @@ describe(`Test GET ${endpoint}`, () => {
         // TODO Implement me!
         const response = await request
         .delete(`${endpoint}/${order._id}`)
-        .set("Authorization", `Bearer ${usertoken2}`);
+        .set("Authorization", `Bearer ${tokens.admin}`);
       expect(response.status).toBe(403);
       });
 
